@@ -1,5 +1,6 @@
 import { ColDef, Column, GridApi, IRowNode } from "ag-grid-community";
 import { CustomCellRendererProps } from "ag-grid-react";
+import { MouseEventHandler } from "react";
 
 /**
  * @typedef {Object} TPosition
@@ -49,7 +50,7 @@ interface ValueSetterParams<TData = TPosition, TValue = any> {
     context: any;
 }
 export interface IPositionButtonRow extends CustomCellRendererProps{
-    onClick: (id: string) => React.MouseEventHandler<HTMLButtonElement>;
+    onClick: (id: string) => MouseEventHandler<HTMLButtonElement>;
 }
 /**
   * @typedef {function} ValueSetterFunc
