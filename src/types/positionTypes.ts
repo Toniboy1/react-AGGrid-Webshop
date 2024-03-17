@@ -18,7 +18,15 @@ export type TPosition = {
     job_title: string;
     order: number;
 };
+export interface KeyboardEvent extends Event {
+    key: string;
+    keyCode: number;
+    shiftKey: boolean;
+    ctrlKey: boolean;
+    altKey: boolean;
+    metaKey: boolean;
 
+}
 /**
  * @typedef {Object} ValueSetterParams
  * @property {any} oldValue

@@ -3,8 +3,8 @@ import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { ColDef, GetRowIdFunc, GetRowIdParams, GridReadyEvent, IRowNode, IsRowSelectable } from 'ag-grid-community';
-import { TPositionRow, ValueSetterFunc } from '@/types/positionTypes';
+import { ColDef, GetRowIdFunc, GetRowIdParams, GridReadyEvent, IRowNode, IsRowSelectable, CellKeyDownEvent, FullWidthCellKeyDownEvent } from 'ag-grid-community';
+import { TPositionRow, ValueSetterFunc, KeyboardEvent } from '@/types/positionTypes';
 import { createPosition, deletePosition, getPositions, updatePosition } from './api/positions';
 import DeleteRow from './components/cells/renderer/deleteRow';
 
@@ -47,7 +47,7 @@ export default function Home() {
         return true;
       })
       .catch(error => {
-        console.error(error);
+        setError(error.message);
         return false;
       });
 
@@ -59,16 +59,17 @@ export default function Home() {
       headerName: 'ID', field: 'id', rowDrag: true,
       headerCheckboxSelection: true,
       checkboxSelection: true,
-      showDisabledCheckboxes: true
+      showDisabledCheckboxes: true,
+      editable: false,
     },
-    { headerName: 'First Name', field: 'first_name' },
-    { headerName: 'Last Name', field: 'last_name' },
+    { headerName: 'First Name', field: 'first_name', editable: false },
+    { headerName: 'Last Name', field: 'last_name', editable: false },
     {
       headerName: 'Job Title', field: 'job_title', cellEditor: 'agTextCellEditor', cellEditorParams: { maxLength: 20 },
       valueSetter: valueSetter
     },
-    { headerName: 'Order', field: 'order' },
-    { headerName: 'Actions', field: 'id', cellRenderer: DeleteRow, cellRendererParams: { onClick: (id: string) => removeRowAction(id) } },
+    { headerName: 'Order', field: 'order', editable: false },
+    { headerName: 'Actions', editable: false, field: 'id', cellRenderer: DeleteRow, cellRendererParams: { onClick: (id: string) => removeRowAction(id) } },
   ]);
 
   const [rowData, setRowData] = useState<TPositionRow[]>([]);
@@ -107,10 +108,10 @@ export default function Home() {
       });
       setRowData(filteredData);
     }, [rowData]);
-    const rowDataRef = useRef(rowData);
-    useEffect(() => {
-      rowDataRef.current = rowData;
-    }, [rowData]);
+  const rowDataRef = useRef(rowData);
+  useEffect(() => {
+    rowDataRef.current = rowData;
+  }, [rowData]);
   const removeRowAction = useCallback(
     async (id: string) => {
       const rowNode = gridRef.current!.api.getRowNode(id);
@@ -146,6 +147,58 @@ export default function Home() {
     },
     [rowData]
   );
+  const addEmptyRow = useCallback(async () => {
+    const emptyRow: TPositionRow = {
+      id: 'temp-' + Date.now(), // Temporary unique ID
+      first_name: '',
+      last_name: '',
+      job_title: '',
+      order: rowData.length + 1,
+    };
+    await createPosition(emptyRow)
+    setRowData([...rowData, emptyRow]);
+  }, [rowData]);
+  const onCellKeyDown = useCallback((e: CellKeyDownEvent<TPositionRow> | FullWidthCellKeyDownEvent<TPositionRow>) => {
+    if (!e.event) return;
+    const browserEvent: KeyboardEvent = e.event as KeyboardEvent;
+    if((browserEvent.ctrlKey || browserEvent.metaKey) && browserEvent.keyCode === 67){
+      navigator.clipboard.writeText(
+        gridRef.current!.api.getSelectedNodes()
+          .map((node) => {
+            return `${node.data.first_name},${node.data.last_name},${node.data.job_title},${node.data.order}`})
+          .join('\n')
+      ).then(() => {
+      }).catch((err: any) => setError('Could not copy text: '+ err.message));
+    }
+    else if ((browserEvent.ctrlKey || browserEvent.metaKey) && browserEvent.keyCode === 86) {
+      navigator.clipboard.readText().then(async text => {
+        const rows = text.split('\n');
+        const newRows : TPositionRow[] = [];
+        for (const row of rows) {
+          const cells = row.split(',');
+          let data: TPositionRow = {
+            id: 'temp-' + Date.now(), // Generate a temporary ID
+            first_name: cells[0] || '',
+            last_name: cells[1] || '',
+            job_title: cells[2] || '',
+            order: parseInt(cells[3]) || rowData.length + 1,
+          };
+          try {
+            const response = await createPosition(data);
+            if (response.status === 201) {
+              newRows.push(response.data);
+            } else {
+              setError(await response.data.text());
+            }
+          } catch (error: any) {
+            setError(error.message);
+          }
+        }
+        setRowData(oldData => [...oldData, ...newRows]);
+      });
+    }
+    
+  }, [rowData]);
 
   return (
     <div
@@ -167,10 +220,14 @@ export default function Home() {
             onSelectionChanged={onSelectionChanged}
             suppressRowClickSelection={true}
             isRowSelectable={isRowSelectable}
+            enableCellTextSelection={true}
+            clipboardDelimiter=','
+            onCellKeyDown={onCellKeyDown}
           ></AgGridReact>
       }
       <button onClick={removeSelected}>Remove</button>
       <button onClick={() => addFiveItems(true)}>Add 5 items to the end</button>
+      <button onClick={addEmptyRow}>Add Empty Row</button>
     </div>
   );
 }
