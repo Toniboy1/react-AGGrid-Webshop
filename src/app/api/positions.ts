@@ -2,7 +2,7 @@ import { TPosition } from '@/types/positionTypes';
 import axios from 'axios';
 const API_URL = 'http://localhost:3001/positions';
 
-export const getPositions = async () => {
+export const getPositions = async (orderBy = 'desc') => {
     return await axios.get(API_URL);
 };
 
