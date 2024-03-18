@@ -9,6 +9,8 @@ import { columnDefs, defaultColDef, getRowId, isRowSelectable, onCellKeyDown, on
 import { AgGridReact } from "ag-grid-react";
 import { useContext, useRef } from "react";
 import { IPositionRow } from "@/types/positionTypes";
+import { PositionsSearch } from "@/components/invoicing/components/positions/search/controller";
+;
 
 export default function Home() {
   return (
@@ -32,7 +34,7 @@ function HomeContent() {
         <p>Square 1</p>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
-        <p>Square 2</p>
+        <PositionsSearch addRow={addRow} rowData={rowData}></PositionsSearch>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
         <p>Square 3</p>

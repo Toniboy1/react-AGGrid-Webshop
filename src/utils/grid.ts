@@ -38,7 +38,10 @@ const valueSetter: ValueSetterFunc<IPositionRow, string> = params => {
 export const columnDefs = (removeSelected: (selectedIds: string[]) => Promise<void>) => {
     return [
         {
-            headerName: 'ID', field: 'id', rowDrag: true,
+            headerName: 'ID', 
+            field: 'id', 
+            rowDrag: true,
+            dndSource:true,
             headerCheckboxSelection: true,
             checkboxSelection: true,
             showDisabledCheckboxes: true,
@@ -54,6 +57,7 @@ export const columnDefs = (removeSelected: (selectedIds: string[]) => Promise<vo
         { headerName: 'Actions', editable: false, field: 'id', cellRenderer: DeleteRow, cellRendererParams: { onClick: (id: string) => removeSelected([id]) } },
     ]
 };
+
 export const isRowSelectable: IsRowSelectable = (params) => {
     return !!params.data && params.data.job_title !== "2";
 };

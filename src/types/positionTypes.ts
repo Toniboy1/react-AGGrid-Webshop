@@ -12,6 +12,12 @@ import { MouseEventHandler } from "react";
 export interface IPositionRow extends TPosition {
     id: string;
 };
+export type TPositionCatlogue = {
+    id: string;
+    name: string;
+    description: string;
+    created_at: string;
+};
 
 export type TPosition = {
     first_name: string;

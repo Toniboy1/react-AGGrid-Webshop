@@ -30,11 +30,11 @@ export const useFetchPositions = () => {
     }, []);
 
     // Function to add a new row
-    const addRow = async (append: boolean,data : TPosition) => {
+    const addRow = async (append: boolean, data: TPosition) => {
         try {
             //add random string id to data
             let id = Math.random().toString(36).substring(7);
-            const newItem = { id,...data};
+            const newItem = { id, ...data };
             const response = await createPosition(newItem);
             if (response.status !== 201) {
                 throw new Error(await response.data.text());
@@ -60,3 +60,5 @@ export const useFetchPositions = () => {
 
     return { rowData, loading, error, addRow, removeSelected, gridRef };
 };
+
+
