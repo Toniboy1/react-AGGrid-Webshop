@@ -1,9 +1,9 @@
-import { Card} from "@/components/ui/card";
-import { ComponentProps, FC, LegacyRef, useRef} from "react";
+import { Card } from "@/components/ui/card";
+import { ComponentProps, FC, LegacyRef, useRef } from "react";
 import { PositionGridProvider } from "./provider";
 import { AgGridReact } from "ag-grid-react";
 import { IPositionRow } from '@/types/positionTypes';
-import { columnDefs, defaultColDef, getRowId, isRowSelectable, onCellKeyDown, onGridReady } from "@/utils/grid";
+import { columnDefs, defaultColDef, getRowId, isRowSelectable, onDragStopped, onGridReady, onDragStarted, onRowDragEnter, onRowDragEnd, onRowDragMove, onRowDragLeave } from "@/utils/grid";
 
 
 type CardProps = ComponentProps<typeof Card>
@@ -19,14 +19,14 @@ interface ActionsHandler {
 
 type PositionGridProps = CardProps & ActionsHandler;
 
-export const PositionGrid: FC<PositionGridProps> = ({rowData,loading,error,addRow,removeSelected,gridRef }: PositionGridProps) => {
+export const PositionGrid: FC<PositionGridProps> = ({ rowData, loading, error, addRow, removeSelected, gridRef }: PositionGridProps) => {
     return (<PositionGridProvider>
         <PositionGridComponent rowData={rowData} loading={loading} error={error} addRow={addRow} removeSelected={removeSelected} gridRef={gridRef} />
     </PositionGridProvider>);
 };
 
 //Create a second aggrid empty table to drag data for the first table in it
-const PositionGridComponent: FC<PositionGridProps> = ({ 
+const PositionGridComponent: FC<PositionGridProps> = ({
     rowData,
     loading,
     error,
@@ -53,16 +53,23 @@ const PositionGridComponent: FC<PositionGridProps> = ({
                         columnDefs={columnDefs(removeSelected)}
                         defaultColDef={defaultColDef}
                         getRowId={getRowId}
-                        enableCellChangeFlash={true}
+                        // enableCellChangeFlash={true}
+                        suppressMoveWhenRowDragging={true}
                         rowDragManaged={true}
                         rowSelection='multiple'
                         onGridReady={onGridReady}
                         suppressRowClickSelection={true}
+                        suppressTouch={true}
                         isRowSelectable={isRowSelectable}
                         enableCellTextSelection={true}
                         clipboardDelimiter=','
-                        onCellKeyDown={(e) => onCellKeyDown(e, addRow)}
-                    ></AgGridReact>
+                        onDragStarted={(e)=>onDragStarted(e,'main')}
+                        onDragStopped={(e)=>onDragStopped(e,'main')}
+                        onRowDragEnter={(e) => onRowDragEnter(e, 'main')}
+                        onRowDragEnd={(e) => onRowDragEnd(e, 'main')}
+                        onRowDragMove={(e) => onRowDragMove(e, 'main')}
+                        onRowDragLeave={(e) => onRowDragLeave(e, 'main')}
+                        ></AgGridReact>
             }
         </div>
     );
