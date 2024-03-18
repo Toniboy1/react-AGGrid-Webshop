@@ -21,60 +21,11 @@
   ],
   "positions": [
     {
-      "id": "temp-1710768806534",
+      "id": "temp-1710781868717",
       "first_name": "",
       "last_name": "",
-      "job_title": "sadsad",
+      "job_title": "3432",
       "order": 1
-    },
-    {
-      "id": "test-1-1710769424452",
-      "first_name": "test-1",
-      "last_name": "test-1",
-      "job_title": "",
-      "order": 3
-    },
-    {
-      "id": "test-2-1710769454273",
-      "first_name": "test-2",
-      "last_name": "test-2",
-      "job_title": "",
-      "order": 3
-    },
-    {
-      "id": "test-3-1710769455490",
-      "first_name": "test-3",
-      "last_name": "test-3",
-      "job_title": "",
-      "order": 4
-    },
-    {
-      "id": "test-1-1710770692851",
-      "first_name": "test-1",
-      "last_name": "test-1",
-      "job_title": "",
-      "order": 5
-    },
-    {
-      "id": "test-2-1710771048752",
-      "first_name": "test-2",
-      "last_name": "test-2",
-      "job_title": "",
-      "order": 6
-    },
-    {
-      "id": "test-2-1710771052186",
-      "first_name": "test-2",
-      "last_name": "test-2",
-      "job_title": "",
-      "order": 7
-    },
-    {
-      "id": "test-3-1710771052601",
-      "first_name": "test-3",
-      "last_name": "test-3",
-      "job_title": "",
-      "order": 8
     }
   ]
 }

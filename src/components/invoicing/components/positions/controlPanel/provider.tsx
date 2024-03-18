@@ -5,14 +5,15 @@ interface PositionsProviderProps {
     children: ReactNode;
   }
 export const PositionsProvider: FC<PositionsProviderProps> = ({ children }) => {
-    const { rowData, loading, error, addRow, removeSelected } = useFetchPositions();
+    const { rowData, loading, error, addRow, removeSelected,gridRef } = useFetchPositions();
   
     const contextValue: PositionsContextType = {
       rowData,
       loading,
       error,
       addRow,
-      removeSelected
+      removeSelected,
+      gridRef
     };
     return (
       <PositionsContext.Provider value={contextValue}>

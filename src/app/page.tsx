@@ -1,8 +1,8 @@
 "use client";
 
-import { PositionsContext } from "@/components/invoicing/components/positions/context";
-import { PositionsProvider } from "@/components/invoicing/components/positions/provider";
-import { PositionController } from "@/components/invoicing/components/positions/controller";
+import { PositionsContext } from "@/components/invoicing/components/positions/controlPanel/context";
+import { PositionsProvider } from "@/components/invoicing/components/positions/controlPanel/provider";
+import { PositionController } from "@/components/invoicing/components/positions/controlPanel/controller";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { columnDefs, defaultColDef, getRowId, isRowSelectable, onCellKeyDown, onGridReady, handleCopy, handlePaste } from "@/utils/grid";
@@ -10,7 +10,8 @@ import { AgGridReact } from "ag-grid-react";
 import { useContext, useRef } from "react";
 import { IPositionRow } from "@/types/positionTypes";
 import { PositionsSearch } from "@/components/invoicing/components/positions/search/controller";
-import { PositionFavorite } from "@/components/invoicing/components/positions/favorite/component";
+import { PositionFavorite } from "@/components/invoicing/components/positions/grid/favorite/component";
+import { PositionGrid } from "@/components/invoicing/components/positions/grid/main/component";
 ;
 
 export default function Home() {
@@ -28,7 +29,8 @@ function HomeContent() {
     return <div>Context not available</div>;
   }
   const { rowData, loading, error, addRow, removeSelected } = context;
-  const gridRef = useRef<AgGridReact>(null);
+  const mainGridRef = useRef<AgGridReact<IPositionRow>>(null);
+  const favoriteGridRef = useRef<AgGridReact<IPositionRow>>(null);
   return (
     <div className="grid grid-cols-3 grid-rows-3 h-screen">
       <div className="border border-gray-200 flex justify-center items-center">
@@ -44,48 +46,20 @@ function HomeContent() {
         <p>Square 4</p>
       </div>
       <div className="border border-gray-200 flex justify-center items-center ">
-        <div
-          className="ag-theme-alpine"
-          style={{
-            height: "100%",
-            width: "100%",
-          }}
-        >
-          {loading ? <p>Loading...</p> :
-            error ? <p>{error}</p> :
-              //add a basic text to see that it prints
-
-              <AgGridReact
-                ref={gridRef}
-                rowData={rowData}
-                columnDefs={columnDefs(removeSelected)}
-                defaultColDef={defaultColDef}
-                getRowId={getRowId}
-                enableCellChangeFlash={true}
-                rowDragManaged={true}
-                rowSelection='multiple'
-                onGridReady={onGridReady}
-                suppressRowClickSelection={true}
-                isRowSelectable={isRowSelectable}
-                enableCellTextSelection={true}
-                clipboardDelimiter=','
-                onCellKeyDown={(e) => onCellKeyDown(e, addRow)}
-              ></AgGridReact>
-          }
-        </div>
+        <PositionGrid rowData={rowData} loading={loading} error={error} addRow={addRow} removeSelected={removeSelected} gridRef={mainGridRef}></PositionGrid>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
-        <PositionFavorite> </PositionFavorite>
+        <PositionFavorite gridRef={favoriteGridRef}> </PositionFavorite>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
         <p>Square 7</p>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
-        {!gridRef.current ? <p>Api loading</p> :
+        {!mainGridRef.current ? <p>Api loading</p> :
           <PositionController
             removeSelected={() => {
-              if (gridRef.current) {
-                const selectedRows = gridRef.current.api.getSelectedRows();
+              if (mainGridRef.current) {
+                const selectedRows = mainGridRef.current.api.getSelectedRows();
                 removeSelected(selectedRows.map((row: IPositionRow) => row.id));
               }
             }}
@@ -98,8 +72,8 @@ function HomeContent() {
                 order: rowData.length + 1
               })
             }}
-            onCopy={() => handleCopy(gridRef.current!.api)}
-            onPaste={() => handlePaste(gridRef.current!.api, addRow)}
+            onCopy={() => handleCopy(mainGridRef.current!.api)}
+            onPaste={() => handlePaste(mainGridRef.current!.api, addRow)}
           ></PositionController>
         }
 
