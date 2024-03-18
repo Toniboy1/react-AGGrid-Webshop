@@ -1,5 +1,5 @@
 import { PlusIcon, TrashIcon, ClipboardCopyIcon, ClipboardIcon } from "@radix-ui/react-icons"
-
+import { AgGridReact } from "ag-grid-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,29 +10,59 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { ComponentProps } from "react"
+import { ComponentProps, FC, LegacyRef, Ref, RefObject } from "react"
+import { IPositionRow } from "@/types/positionTypes"
+import { GridApi } from "ag-grid-community"
 
 
 type CardProps = ComponentProps<typeof Card>
 
 interface ActionsHandler {
-    removeSelected: () => void;
-    addEmptyRow: () => void;
-    onCopy: () => void;
-    onPaste: () => void;
+    removeSelected: (selectedIds: string[]) => void;
+    addRow: (append: boolean, data: IPositionRow) => Promise<void>;
+    handleCopy: (api: GridApi<IPositionRow>) => void;
+    handlePaste: (api: GridApi<IPositionRow>, addRow: (append: boolean, data: IPositionRow) => Promise<void>) => void;
+    api: GridApi<IPositionRow> | undefined;
+    rowData: IPositionRow[];
 }
 
 type PositionControllerProps = CardProps & ActionsHandler;
 
-export const PositionController: React.FC<PositionControllerProps> = ({
+export const PositionController: FC<PositionControllerProps> = ({
     className,
     removeSelected,
-    addEmptyRow,
-    onCopy,
-    onPaste,
+    addRow,
+    handleCopy,
+    handlePaste,
+    api,
+    rowData,
     ...props
-}) => {
+}: PositionControllerProps) => {
+    if (!api) {
+        return <p>Api Not here</p>
+    }
+    const removeSelectedRows = () => {
+        const selectedRows = api.getSelectedRows();
+        removeSelected(selectedRows.map((row: IPositionRow) => row.id));
+    }
+    const addEmptyRow = () => {
+        addRow(true, {
+            id: 'temp-' + Date.now(),
+            first_name: '',
+            last_name: '',
+            job_title: '',
+            order: rowData.length + 1
+          })
+    }
+    const onCopy = () => {
+        handleCopy(api)
+    }
+    
+    const onPaste = () => {
+        handlePaste(api, addRow)
+    }
     return (
+
         <Card className={cn("w-[380px]", className)} {...props}>
             <CardHeader>
                 <CardTitle>Controle Panel</CardTitle>
@@ -45,7 +75,7 @@ export const PositionController: React.FC<PositionControllerProps> = ({
                 </Button>
             </CardHeader>
             <CardContent className="grid gap-4">
-                <Button className="w-full" onClick={removeSelected}>
+                <Button className="w-full" onClick={removeSelectedRows}>
                     <TrashIcon className="mr-2 h-4 w-4" /> Remove selected
                 </Button>
             </CardContent>

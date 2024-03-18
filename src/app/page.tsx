@@ -2,7 +2,7 @@
 
 import { PositionsContext } from "@/components/invoicing/components/positions/controlPanel/context";
 import { PositionsProvider } from "@/components/invoicing/components/positions/controlPanel/provider";
-import { PositionController } from "@/components/invoicing/components/positions/controlPanel/controller";
+import { PositionController } from "@/components/invoicing/components/positions/controlPanel/component";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { columnDefs, defaultColDef, getRowId, isRowSelectable, onCellKeyDown, onGridReady, handleCopy, handlePaste } from "@/utils/grid";
@@ -46,7 +46,14 @@ function HomeContent() {
         <p>Square 4</p>
       </div>
       <div className="border border-gray-200 flex justify-center items-center ">
-        <PositionGrid rowData={rowData} loading={loading} error={error} addRow={addRow} removeSelected={removeSelected} gridRef={mainGridRef}></PositionGrid>
+        <PositionGrid
+          rowData={rowData}
+          loading={loading}
+          error={error}
+          addRow={addRow}
+          removeSelected={removeSelected}
+          gridRef={mainGridRef}
+        ></PositionGrid>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
         <PositionFavorite gridRef={favoriteGridRef}> </PositionFavorite>
@@ -55,27 +62,13 @@ function HomeContent() {
         <p>Square 7</p>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
-        {!mainGridRef.current ? <p>Api loading</p> :
-          <PositionController
-            removeSelected={() => {
-              if (mainGridRef.current) {
-                const selectedRows = mainGridRef.current.api.getSelectedRows();
-                removeSelected(selectedRows.map((row: IPositionRow) => row.id));
-              }
-            }}
-            addEmptyRow={() => {
-              addRow(true, {
-                id: 'temp-' + Date.now(),
-                first_name: '',
-                last_name: '',
-                job_title: '',
-                order: rowData.length + 1
-              })
-            }}
-            onCopy={() => handleCopy(mainGridRef.current!.api)}
-            onPaste={() => handlePaste(mainGridRef.current!.api, addRow)}
-          ></PositionController>
-        }
+        <PositionController api={mainGridRef.current?.api}
+          removeSelected={removeSelected}
+          addRow={addRow}
+          rowData={rowData}
+          handleCopy={handleCopy}
+          handlePaste={handlePaste}
+        ></PositionController>
 
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
