@@ -57,6 +57,20 @@ export const columnDefs = (removeSelected: (selectedIds: string[]) => Promise<vo
         { headerName: 'Actions', editable: false, field: 'id', cellRenderer: DeleteRow, cellRendererParams: { onClick: (id: string) => removeSelected([id]) } },
     ]
 };
+export const columnFavoriteDefs = () => {
+    return [
+        {
+            headerName: 'ID', 
+            field: 'id', 
+            dndSource:true,
+        },
+        { headerName: 'First Name', field: 'first_name', editable: false },
+        { headerName: 'Last Name', field: 'last_name', editable: false },
+        {
+            headerName: 'Job Title', field: 'job_title'
+        }
+    ]
+};
 
 export const isRowSelectable: IsRowSelectable = (params) => {
     return !!params.data && params.data.job_title !== "2";

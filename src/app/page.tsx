@@ -10,6 +10,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useContext, useRef } from "react";
 import { IPositionRow } from "@/types/positionTypes";
 import { PositionsSearch } from "@/components/invoicing/components/positions/search/controller";
+import { PositionFavorite } from "@/components/invoicing/components/positions/favorite/component";
 ;
 
 export default function Home() {
@@ -74,7 +75,7 @@ function HomeContent() {
         </div>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
-        <p>Square 6</p>
+        <PositionFavorite> </PositionFavorite>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
         <p>Square 7</p>
