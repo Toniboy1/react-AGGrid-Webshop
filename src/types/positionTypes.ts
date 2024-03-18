@@ -9,7 +9,7 @@ import { MouseEventHandler } from "react";
  * @property {string} last_name
  * @property {string} job_title
  */
-export interface TPositionRow extends TPosition {
+export interface IPositionRow extends TPosition {
     id: string;
 };
 
@@ -19,7 +19,7 @@ export type TPosition = {
     job_title: string;
     order: number;
 };
-export interface KeyboardEvent extends Event {
+export interface IKeyboardEvent extends Event {
     key: string;
     keyCode: number;
     shiftKey: boolean;
@@ -39,7 +39,7 @@ export interface KeyboardEvent extends Event {
  * @property {GridApi} api
  * @property {any} context
  */
-interface ValueSetterParams<TData = TPosition, TValue = any> {
+interface IValueSetterParams<TData = TPosition, TValue = any> {
     oldValue: TValue | null | undefined;
     newValue: TValue | null | undefined;
     node: IRowNode<TData> | null;
@@ -58,5 +58,5 @@ export interface IPositionButtonRow extends CustomCellRendererProps{
   * @returns {boolean}
 **/
 export interface ValueSetterFunc<TData = TPosition, TValue = any> {
-    (params: ValueSetterParams<TData, TValue>): boolean;
+    (params: IValueSetterParams<TData, TValue>): boolean;
 }

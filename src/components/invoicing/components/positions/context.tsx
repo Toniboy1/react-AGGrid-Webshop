@@ -1,11 +1,11 @@
 import { createContext } from 'react';
-import { TPositionRow } from '@/types/positionTypes';;
+import { IPositionRow } from '@/types/positionTypes';;
 
 export interface PositionsContextType {
-  rowData: TPositionRow[];
+  rowData: IPositionRow[];
   loading: boolean;
   error: string | null;
-  addRow: (append: boolean, data: TPositionRow) => Promise<void>;
+  addRow: (append: boolean, data: IPositionRow) => Promise<void>;
   removeSelected: (selectedIds: string[]) => Promise<void>;
 }
 export const PositionsContext = createContext<PositionsContextType | null>(null);

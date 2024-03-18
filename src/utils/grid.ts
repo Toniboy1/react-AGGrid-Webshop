@@ -1,5 +1,5 @@
 import { ColDef, IsRowSelectable, GetRowIdFunc, GridReadyEvent, IRowNode, CellKeyDownEvent, FullWidthCellKeyDownEvent, GridApi } from 'ag-grid-community';
-import { TPositionRow, ValueSetterFunc } from '@/types/positionTypes';
+import { IPositionRow, ValueSetterFunc } from '@/types/positionTypes';
 import { updatePosition } from '@/services/positions';
 import DeleteRow from '@/components/invoicing/components/positions/grid/cells/renderer/deleteRow';
 export const getAllRows = (api: GridApi<any>): IRowNode[] => {
@@ -16,7 +16,7 @@ export const defaultColDef: ColDef = {
     filter: true,
 };
 
-const valueSetter: ValueSetterFunc<TPositionRow, string> = params => {
+const valueSetter: ValueSetterFunc<IPositionRow, string> = params => {
     if (params.newValue == null) {
         return false;
     }
@@ -68,13 +68,13 @@ export const onGridReady = (params: GridReadyEvent) => {
 };
 
 
-export const onCellKeyDown = (e: CellKeyDownEvent<TPositionRow> | FullWidthCellKeyDownEvent<TPositionRow>, addRow: (append: boolean, data: TPositionRow) => Promise<void>) => {
+export const onCellKeyDown = (e: CellKeyDownEvent<IPositionRow> | FullWidthCellKeyDownEvent<IPositionRow>, addRow: (append: boolean, data: IPositionRow) => Promise<void>) => {
     if (!e.event) return;
     const browserEvent: KeyboardEvent = e.event as KeyboardEvent;
     if ((browserEvent.ctrlKey || browserEvent.metaKey) && browserEvent.keyCode === 67) {
         navigator.clipboard.writeText(
             e.api.getSelectedNodes()
-                .map((node: IRowNode<TPositionRow>) => {
+                .map((node: IRowNode<IPositionRow>) => {
                     if (!node.data) return '' // Skip the header row (if present
                     return `${node.data.first_name},${node.data.last_name},${node.data.job_title},${node.data.order}`
                 })
@@ -87,7 +87,7 @@ export const onCellKeyDown = (e: CellKeyDownEvent<TPositionRow> | FullWidthCellK
             const rows = text.split('\n');
             for (const row of rows) {
                 const cells = row.split(',');
-                let data: TPositionRow = {
+                let data: IPositionRow = {
                     id: 'temp-' + Date.now(), // Generate a temporary ID
                     first_name: cells[0] || '',
                     last_name: cells[1] || '',
@@ -103,7 +103,7 @@ export const onCellKeyDown = (e: CellKeyDownEvent<TPositionRow> | FullWidthCellK
 export const handleCopy = (api: GridApi<any>) => {
     navigator.clipboard.writeText(
         api.getSelectedNodes()
-            .map((node: IRowNode<TPositionRow>) => {
+            .map((node: IRowNode<IPositionRow>) => {
                 if (!node.data) return ''; // Skip the header row (if present)
                 return `${node.data.first_name},${node.data.last_name},${node.data.job_title},${node.data.order}`;
             })
@@ -112,12 +112,12 @@ export const handleCopy = (api: GridApi<any>) => {
     }).catch((err: any) => console.log('Could not copy text: ' + err.message));
 };
 
-export const handlePaste = (api: GridApi<any>, addRow: (append: boolean, data: TPositionRow) => Promise<void>) => {
+export const handlePaste = (api: GridApi<any>, addRow: (append: boolean, data: IPositionRow) => Promise<void>) => {
     navigator.clipboard.readText().then(async text => {
         const rows = text.split('\n');
         for (const row of rows) {
             const cells = row.split(',');
-            let data: TPositionRow = {
+            let data: IPositionRow = {
                 id: 'temp-' + Date.now(), // Generate a temporary ID
                 first_name: cells[0] || '',
                 last_name: cells[1] || '',

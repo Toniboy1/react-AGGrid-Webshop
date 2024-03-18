@@ -8,7 +8,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { columnDefs, defaultColDef, getRowId, isRowSelectable, onCellKeyDown, onGridReady, handleCopy, handlePaste } from "@/utils/grid";
 import { AgGridReact } from "ag-grid-react";
 import { useContext, useRef } from "react";
-import { TPositionRow } from "@/types/positionTypes";
+import { IPositionRow } from "@/types/positionTypes";
 
 export default function Home() {
   return (
@@ -83,7 +83,7 @@ function HomeContent() {
             removeSelected={() => {
               if (gridRef.current) {
                 const selectedRows = gridRef.current.api.getSelectedRows();
-                removeSelected(selectedRows.map((row: TPositionRow) => row.id));
+                removeSelected(selectedRows.map((row: IPositionRow) => row.id));
               }
             }}
             addEmptyRow={() => {

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPosition, deletePosition, getPositions } from '@/services/positions';
-import { TPosition, TPositionRow } from '@/types/positionTypes';
+import { TPosition, IPositionRow } from '@/types/positionTypes';
 import { AgGridReact } from 'ag-grid-react';
 
 export const useFetchPositions = () => {
     const gridRef = useRef<AgGridReact>(null);
-    const [rowData, setRowData] = useState<TPositionRow[]>([]);
+    const [rowData, setRowData] = useState<IPositionRow[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
