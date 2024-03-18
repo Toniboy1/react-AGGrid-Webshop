@@ -5,7 +5,7 @@ import { PositionsProvider } from "@/components/invoicing/components/positions/c
 import { PositionController } from "@/components/invoicing/components/positions/controlPanel/component";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { columnDefs, defaultColDef, getRowId, isRowSelectable, onCellKeyDown, onGridReady, handleCopy, handlePaste } from "@/utils/grid";
+import { handleCopy, handlePaste } from "@/utils/grid";
 import { AgGridReact } from "ag-grid-react";
 import { useContext, useRef } from "react";
 import { IPositionRow } from "@/types/positionTypes";
@@ -56,7 +56,7 @@ function HomeContent() {
         ></PositionGrid>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
-        <PositionFavorite gridRef={favoriteGridRef}> </PositionFavorite>
+        <PositionFavorite gridRef={favoriteGridRef} mainGridRef={mainGridRef}> </PositionFavorite>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
         <p>Square 7</p>

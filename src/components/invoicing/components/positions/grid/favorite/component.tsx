@@ -12,13 +12,14 @@ type CardProps = ComponentProps<typeof Card>
 
 interface ActionsHandler {
     gridRef: LegacyRef<AgGridReact<IPositionRow>>;
+    mainGridRef: LegacyRef<AgGridReact<IPositionRow>>;
 }
 
 type PositionFavoriteProps = CardProps & ActionsHandler;
 
-export const PositionFavorite: FC<PositionFavoriteProps> = ({ gridRef }: PositionFavoriteProps) => {
+export const PositionFavorite: FC<PositionFavoriteProps> = ({ gridRef, mainGridRef }: PositionFavoriteProps) => {
     return (<PositionFavoriteProvider>
-        <PositionFavoriteComponent gridRef={gridRef} />
+        <PositionFavoriteComponent gridRef={gridRef} mainGridRef={mainGridRef} />
     </PositionFavoriteProvider>);
 };
 
