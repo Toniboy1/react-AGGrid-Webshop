@@ -12,6 +12,7 @@ import { IPositionRow } from "@/types/positionTypes";
 import { PositionsSearch } from "@/components/invoicing/components/positions/search/controller";
 import { PositionFavorite } from "@/components/invoicing/components/positions/grid/favorite/component";
 import { PositionGrid } from "@/components/invoicing/components/positions/grid/main/component";
+import { UsersOnline } from "@/components/invoicing/usersOnline/component";
 ;
 
 export default function Home() {
@@ -34,7 +35,7 @@ function HomeContent() {
   return (
     <div className="grid grid-cols-3 grid-rows-3 h-screen">
       <div className="border border-gray-200 flex justify-center items-center">
-        <p>Square 1</p>
+        <UsersOnline></UsersOnline>
       </div>
       <div className="border border-gray-200 flex justify-center items-center">
         <PositionsSearch addRow={addRow} rowData={rowData}></PositionsSearch>
